@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.EventDay;
+import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 import com.applandeo.materialcalendarview.listeners.OnDayClickListener;
 import com.applandeo.materialcalendarview.utils.DateUtils;
 
@@ -78,19 +79,19 @@ public class MainActivity extends AppCompatActivity {
         events.add(new EventDay(calendar, R.drawable.ic_event));
         calendarView.setEvents(events);
 
-
         if(simpanPilihanTanggal.getCondition()) {
-            calendar.set(Calendar.YEAR, simpanPilihanTanggal.getYear());
-            calendar.set(Calendar.MONTH, simpanPilihanTanggal.getMonth());
-            calendar.set(Calendar.DAY_OF_MONTH, simpanPilihanTanggal.getDay());
-            calendar.set(year,month,dayOfMonth);
-//            List<Calendar> calendars = new ArrayList<>();
             dayOfWeek = simpanPilihanTanggal.getDayweek();
             dayOfMonth = simpanPilihanTanggal.getDay();
             month = simpanPilihanTanggal.getMonth();
             year = simpanPilihanTanggal.getYear();
-//            calendars.set(0,calendar);
-//            calendarView.setSelectedDates(calendars);
+            Calendar dateSelected = DateUtils.getCalendar();
+            dateSelected.set(year,month,dayOfMonth);
+            try {
+                calendarView.setDate(dateSelected);
+            } catch (OutOfDateRangeException e) {
+                e.printStackTrace();
+            }
+
             switch (dayOfWeek) {
                 case Calendar.SUNDAY:
                     selectedDay = "Minggu";
@@ -305,8 +306,6 @@ public class MainActivity extends AppCompatActivity {
                 simpanPilihanTanggal.setDayweek(dayOfWeek);
                 simpanPilihanTanggal.setCondition(true);
                 Toast.makeText(getApplicationContext(),  selectedDate , Toast.LENGTH_SHORT).show();
-                Calendar selectedDate = calendarView.getFirstSelectedDate();
-                Toast.makeText(MainActivity.this,  " "+selectedDate.toString() , Toast.LENGTH_SHORT).show();
             }
         });
 //        Akhir Setting CalendarView Library Applandeo

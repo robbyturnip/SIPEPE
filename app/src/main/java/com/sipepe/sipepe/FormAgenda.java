@@ -1,17 +1,23 @@
 package com.sipepe.sipepe;
 
+import android.app.TimePickerDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
+
+import java.util.Calendar;
 
 public class FormAgenda extends AppCompatActivity {
     Toolbar toolbar;
     TextView tanggal;
+    EditText waktu;
     Spinner acara,ruang;
     AutoCompleteTextView nim;
 
@@ -24,8 +30,28 @@ public class FormAgenda extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         tanggal=findViewById(R.id.tanggal);
         acara=findViewById(R.id.sp_acara);
+        waktu=findViewById(R.id.waktu);
         ruang=findViewById(R.id.sp_ruang);
         nim=findViewById(R.id.nim);
+
+//        waktu edittextview onclick
+        waktu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Calendar calendar=Calendar.getInstance();
+                int hour=calendar.get(Calendar.HOUR_OF_DAY);
+                int minute=calendar.get(Calendar.MINUTE);
+                TimePickerDialog timePickerDialog;
+                timePickerDialog=new TimePickerDialog(FormAgenda.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        waktu.setText(String.valueOf(hourOfDay)+":"+String.valueOf(minute));
+                    }
+                },hour,minute,true);
+                timePickerDialog.setTitle("Pilih Waktu");
+                timePickerDialog.show();
+            }
+        });
 
 //        Terima Parsing Data Intent
         tanggal.setText(getIntent().getStringExtra("tanggal"));

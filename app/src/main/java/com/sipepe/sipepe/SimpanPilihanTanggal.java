@@ -1,7 +1,10 @@
 package com.sipepe.sipepe;
 
+import java.util.Calendar;
+
 public class SimpanPilihanTanggal {
     public static int year,month,day,dayweek;
+    public static Calendar calendar;
     static boolean  condition;
     public SimpanPilihanTanggal(){}
 
@@ -19,6 +22,12 @@ public class SimpanPilihanTanggal {
     }
     public int getDayweek(){
         return dayweek;
+    }
+    public Calendar getLastCalendar(){
+        return calendar;
+    }
+    public void setLastCalendar(Calendar calendar){
+        this.calendar=calendar;
     }
     public void setDayweek(int dayweek){
         this.dayweek=dayweek;

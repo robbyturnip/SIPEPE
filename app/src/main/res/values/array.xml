@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="acara">
+        <item>Seminar Pra Skripsi</item>
+        <item>Pendadaran</item>
+    </string-array>
+
+    <string-array name="ruang">
+        <item>Ruang B.1.1</item>
+        <item>Ruang Pendadaran</item>
+    </string-array>
+</resources>

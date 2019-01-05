@@ -103,7 +103,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:textSize="16sp"/>
+                        android:textSize="16sp"
+                        android:entries="@array/acara"/>
 
                 </LinearLayout>
 
@@ -169,7 +170,8 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:textSize="16sp"/>
+                        android:textSize="16sp"
+                        android:entries="@array/ruang"/>
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/linearLayout6"

@@ -1,5 +1,7 @@
 package com.sipepe.sipepe;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,9 +12,12 @@ import java.util.ArrayList;
 
 public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHolder>{
     public ArrayList<Jadwal> myJadwal;
-    public MyRecyclerView(ArrayList<Jadwal> myJadwal){
+    public Context context;
+    public MyRecyclerView(Context context, ArrayList<Jadwal> myJadwal){
+        this.context=context;
         this.myJadwal=myJadwal;
     }
+
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
@@ -49,6 +54,19 @@ public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHo
             ruang=view.findViewById(R.id.ruang);
             nim=view.findViewById(R.id.nim);
             nama=view.findViewById(R.id.nama);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context,FormAgenda.class);
+                    intent.putExtra("tanggal",jadwal.getTanggal());
+                    intent.putExtra("acara",jadwal.getAcara());
+                    intent.putExtra("waktu",jadwal.getWaktu());
+                    intent.putExtra("ruang",jadwal.getRuang());
+                    intent.putExtra("nim",jadwal.getNim());
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }

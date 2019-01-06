@@ -99,12 +99,11 @@
 
                     <Spinner
                         android:id="@+id/sp_acara"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:textSize="16sp"
-                        android:entries="@array/acara"/>
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -166,12 +165,11 @@
 
                     <Spinner
                         android:id="@+id/sp_ruang"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:textSize="16sp"
-                        android:entries="@array/ruang"/>
+                        android:textSize="16sp" />
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/linearLayout6"

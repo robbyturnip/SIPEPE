@@ -35,6 +35,9 @@ public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHo
         myViewHolder.ruang.setText(jadwal.getRuang());
         myViewHolder.nim.setText(jadwal.getNim());
         myViewHolder.nama.setText(jadwal.getNama());
+        myViewHolder.kode_acara.setText(jadwal.getKodeAcara());
+        myViewHolder.kode_ruang.setText(jadwal.getKodeRuang());
+        myViewHolder.kode_jadwal.setText(jadwal.getKodeJadwal());
         myViewHolder.jadwal=jadwal;
     }
 
@@ -45,7 +48,7 @@ public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHo
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         Jadwal jadwal;
-        TextView acara,nama,nim,waktu,ruang,tanggal;
+        TextView acara,nama,nim,waktu,ruang,tanggal,kode_acara,kode_ruang,kode_jadwal;
         public MyViewHolder(View view){
             super(view);
             tanggal=view.findViewById(R.id.tanggal);
@@ -54,6 +57,9 @@ public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHo
             ruang=view.findViewById(R.id.ruang);
             nim=view.findViewById(R.id.nim);
             nama=view.findViewById(R.id.nama);
+            kode_acara=view.findViewById(R.id.kode_acara);
+            kode_ruang=view.findViewById(R.id.kode_ruang);
+            kode_jadwal=view.findViewById(R.id.kode_jadwal);
 
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -64,6 +70,10 @@ public class MyRecyclerView extends RecyclerView.Adapter<MyRecyclerView.MyViewHo
                     intent.putExtra("waktu",jadwal.getWaktu());
                     intent.putExtra("ruang",jadwal.getRuang());
                     intent.putExtra("nim",jadwal.getNim());
+                    intent.putExtra("kode_acara",jadwal.getKodeAcara());
+                    intent.putExtra("kode_ruang",jadwal.getKodeRuang());
+                    intent.putExtra("kode_jadwal",jadwal.getKodeJadwal());
+                    intent.putExtra("status","0");
                     context.startActivity(intent);
                 }
             });

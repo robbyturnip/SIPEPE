@@ -28,6 +28,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -45,8 +46,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Jadwal> jadwals;
     ProgressDialog pd;
 
+
     int dayOfMonth,dayOfWeek,month,year;
-    String selectedDay,selectedMonth,selectedDate;
+    String selectedDay,selectedMonth,selectedDate,tanggalDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         calendarView =findViewById(R.id.calendarView);
         recyclerView=findViewById(R.id.recyclerView);
         pd=new ProgressDialog(MainActivity.this);
+
 
 //        Load Event
         loadEvent();
@@ -171,6 +174,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             selectedDate = selectedDay + ", " + dayOfMonth + " " + selectedMonth + " " + year;
+            tanggalDatabase=String.format("%d-%02d-%02d",year,month+1,dayOfMonth);
             simpanPilihanTanggal.setCondition(true);
             Toast.makeText(getApplicationContext(), selectedDate, Toast.LENGTH_SHORT).show();
         }
@@ -241,6 +245,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             selectedDate = selectedDay + ", " + dayOfMonth + " " + selectedMonth + " " + year;
+            tanggalDatabase=String.format("%d-%02d-%02d",year,month+1,dayOfMonth);
+            SimpanPilihanTanggal simpanPilihanTanggal=new SimpanPilihanTanggal();
+            simpanPilihanTanggal.setYear(year);
+            simpanPilihanTanggal.setMonth(month);
+            simpanPilihanTanggal.setDay(dayOfMonth);
+            simpanPilihanTanggal.setDayweek(dayOfWeek);
             simpanPilihanTanggal.setCondition(true);
             Toast.makeText(getApplicationContext(), selectedDate, Toast.LENGTH_SHORT).show();
 
@@ -317,6 +327,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 selectedDate=selectedDay+", "+dayOfMonth+" "+selectedMonth+" "+year;
+                tanggalDatabase=String.format("%d-%02d-%02d",year,month+1,dayOfMonth);
                 SimpanPilihanTanggal simpanPilihanTanggal=new SimpanPilihanTanggal();
                 simpanPilihanTanggal.setYear(year);
                 simpanPilihanTanggal.setMonth(month);
@@ -335,6 +346,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent=new Intent(MainActivity.this, FormAgenda.class);
                 intent.putExtra("tanggal",selectedDate);
+                intent.putExtra("tanggalDatabase",tanggalDatabase);
+                intent.putExtra("status","1");
                 startActivity(intent);
             }
         });
@@ -363,10 +376,13 @@ public class MainActivity extends AppCompatActivity {
                                 Jadwal jadwal = new Jadwal();
                                 jadwal.setTanggal(event.getString("tanggal"));
                                 jadwal.setAcara(event.getString("acara"));
-                                jadwal.setWaktu(event.getString("waktu"));
+                                jadwal.setWaktu((event.getString("waktu")).substring(0,5)+" WIB");
                                 jadwal.setRuang(event.getString("ruang"));
                                 jadwal.setNim(event.getString("nim"));
                                 jadwal.setNama(event.getString("mahasiswa"));
+                                jadwal.setKodeAcara(event.getString("kode_acara"));
+                                jadwal.setKodeRuang(event.getString("kode_ruang"));
+                                jadwal.setKodeJadwal(event.getString("kode_jadwal"));
                                 jadwals.add(jadwal);
                             } catch (JSONException e) {
                                 e.printStackTrace();

@@ -3,7 +3,7 @@ package com.sipepe.sipepe;
 import java.util.Calendar;
 
 public class SimpanPilihanTanggal {
-    public static int year,month,day,dayweek;
+    public static int year,month,day,dayweek,numberMonth;
     public static Calendar calendar;
     static boolean  condition;
     public SimpanPilihanTanggal(){}
@@ -23,6 +23,9 @@ public class SimpanPilihanTanggal {
     public int getDayweek(){
         return dayweek;
     }
+    public int getNumberMonth(){
+        return numberMonth;
+    }
     public Calendar getLastCalendar(){
         return calendar;
     }
@@ -40,6 +43,9 @@ public class SimpanPilihanTanggal {
     }
     public void setDay(int day){
         this.day=day;
+    }
+    public void setNumberMonth(int numberMonth){
+        this.numberMonth=numberMonth;
     }
     public void setCondition(boolean condition){
         this.condition=condition;

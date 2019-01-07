@@ -45,27 +45,6 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center|center_horizontal|center_vertical"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:gravity="center|center_vertical|center_horizontal"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
-
-                    <TextView
-                        android:id="@+id/tanggal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:text="Selasa, 1 Januari 2019"
-                        android:textSize="20sp" />
-                </LinearLayout>
-
-                <LinearLayout
                     android:id="@+id/linearLayout2"
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
@@ -73,29 +52,23 @@
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <LinearLayout
                     android:id="@+id/linearLayout3"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center|center_horizontal|center_vertical"
-                    android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="16dp"
                     android:gravity="center|center_vertical|center_horizontal"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="Acara\t\t\t\t\t\t\t"
-                        android:textColor="@android:color/black"
-                        android:textSize="24sp" />
 
                     <Spinner
                         android:id="@+id/sp_acara"
@@ -103,7 +76,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:textSize="16sp" />
+                        android:textSize="24sp" />
 
                 </LinearLayout>
 
@@ -112,33 +85,36 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center|center_horizontal|center_vertical"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="1dp"
                     android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="16dp"
                     android:gravity="center|center_vertical|center_horizontal"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.3"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
+                    app:layout_constraintTop_toTopOf="parent">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <EditText
+                        android:id="@+id/tanggal"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="Waktu\t\t\t\t\t\t\t"
-                        android:textColor="@android:color/black"
+                        android:layout_weight="1"
+                        android:editable="false"
+                        android:gravity="center_vertical"
+                        android:hint="Tanggal"
                         android:textSize="24sp" />
 
                     <EditText
                         android:id="@+id/waktu"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:editable="false"
                         android:gravity="left"
-                        android:hint="Click"
+                        android:hint="Waktu"
                         android:textColor="@android:color/black"
-                        android:textSize="16sp" />
+                        android:textSize="24sp" />
 
                 </LinearLayout>
 
@@ -147,22 +123,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center|center_horizontal|center_vertical"
-                    android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="16dp"
                     android:gravity="center|center_vertical|center_horizontal"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
-                    <TextView
-                        android:id="@+id/ruang"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:text="Ruang\t\t\t\t\t\t\t"
-                        android:textColor="@android:color/black"
-                        android:textSize="24sp" />
 
                     <Spinner
                         android:id="@+id/sp_ruang"
@@ -170,27 +140,30 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:textSize="16sp" />
+                        android:textSize="24sp" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/linearLayout6"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_gravity="center|center_horizontal|center_vertical"
-                    android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="16dp"
                     android:gravity="center|center_vertical|center_horizontal"
                     android:orientation="horizontal"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout5">
+
                     <AutoCompleteTextView
                         android:id="@+id/nim"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:textSize="24sp"
+                        android:hint="Nomor Induk Mahasiswa"
                         android:textColor="@android:color/black"
-                        android:hint="Nomor Induk Mahasiswa"/>
+                        android:textSize="24sp" />
 
                 </LinearLayout>
 

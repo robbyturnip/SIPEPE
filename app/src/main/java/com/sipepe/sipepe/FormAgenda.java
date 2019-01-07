@@ -26,10 +26,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.annimon.stream.Stream;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.DatePicker;
 import com.applandeo.materialcalendarview.builders.DatePickerBuilder;
+import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 import com.applandeo.materialcalendarview.listeners.OnSelectDateListener;
+import com.applandeo.materialcalendarview.utils.DateUtils;
 import com.sipepe.sipepe.Util.AppController;
 import com.sipepe.sipepe.Util.ServerAPI;
 
@@ -45,7 +48,7 @@ import java.util.Map;
 
 public class FormAgenda extends AppCompatActivity {
     Toolbar toolbar;
-    TextView tanggal;
+    EditText tanggal;
     EditText waktu;
     Spinner acara,ruang;
     AutoCompleteTextView nim;
@@ -56,7 +59,8 @@ public class FormAgenda extends AppCompatActivity {
     protected SpinAdapterAcara spinAdapterAcara;
     protected SpinAdapterRuang spinAdapterRuang;
     public int kodeAcara;
-    public String kodeRuang;
+    public String kodeRuang,selectedDay,selectedMonth,selectedDate,tanggalDatabase,waktuSekarang;
+    int dayOfMonth,dayOfWeek,month,year;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,15 +101,195 @@ public class FormAgenda extends AppCompatActivity {
         tanggal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerBuilder builder = new DatePickerBuilder(FormAgenda.this, new OnSelectDateListener() {
-                    @Override
-                    public void onSelect(List<Calendar> calendar) {
-                        Toast.makeText(getApplicationContext(),"wkwkw",Toast.LENGTH_SHORT).show();
-                    }
-                }).pickerType(CalendarView.ONE_DAY_PICKER);
+                SimpanPilihanTanggalFormAgenda simpanPilihanTanggalFormAgenda = new SimpanPilihanTanggalFormAgenda();
 
-                DatePicker datePicker = builder.build();
-                datePicker.show();
+                if (simpanPilihanTanggalFormAgenda.getConditionTanggal()) {
+                    dayOfWeek = simpanPilihanTanggalFormAgenda.getDayweek();
+                    dayOfMonth = simpanPilihanTanggalFormAgenda.getDay();
+                    month = simpanPilihanTanggalFormAgenda.getMonth();
+                    year = simpanPilihanTanggalFormAgenda.getYear();
+                    Calendar dateSelected = DateUtils.getCalendar();
+                    dateSelected.set(year, month, dayOfMonth);
+                        DatePickerBuilder builder = new DatePickerBuilder(FormAgenda.this, new OnSelectDateListener() {
+
+                            @Override
+                            public void onSelect(List<Calendar> calendar) {
+                                Stream.of(calendar).forEach(calendars -> {
+
+                                            dayOfWeek = calendars.get(Calendar.DAY_OF_WEEK);
+                                            dayOfMonth = calendars.get(Calendar.DAY_OF_MONTH);
+                                            month = calendars.get(Calendar.MONTH);
+                                            year = calendars.get(Calendar.YEAR);
+
+                                        }
+                                );
+//
+                                switch (dayOfWeek) {
+                                    case Calendar.SUNDAY:
+                                        selectedDay = "Minggu";
+                                        break;
+                                    case Calendar.MONDAY:
+                                        selectedDay = "Senin";
+                                        break;
+                                    case Calendar.TUESDAY:
+                                        selectedDay = "Selasa";
+                                        break;
+                                    case Calendar.WEDNESDAY:
+                                        selectedDay = "Rabu";
+                                        break;
+                                    case Calendar.THURSDAY:
+                                        selectedDay = "Kamis";
+                                        break;
+                                    case Calendar.FRIDAY:
+                                        selectedDay = "Jumat";
+                                        break;
+                                    case Calendar.SATURDAY:
+                                        selectedDay = "Sabtu";
+                                        break;
+                                }
+                                switch (month) {
+                                    case Calendar.JANUARY:
+                                        selectedMonth = "Januari";
+                                        break;
+                                    case Calendar.FEBRUARY:
+                                        selectedMonth = "Februari";
+                                        break;
+                                    case Calendar.MARCH:
+                                        selectedMonth = "Maret";
+                                        break;
+                                    case Calendar.APRIL:
+                                        selectedMonth = "April";
+                                        break;
+                                    case Calendar.MAY:
+                                        selectedMonth = "Mei";
+                                        break;
+                                    case Calendar.JUNE:
+                                        selectedMonth = "Juni";
+                                        break;
+                                    case Calendar.JULY:
+                                        selectedMonth = "Juli";
+                                        break;
+                                    case Calendar.AUGUST:
+                                        selectedMonth = "Agustus";
+                                        break;
+                                    case Calendar.SEPTEMBER:
+                                        selectedMonth = "September";
+                                        break;
+                                    case Calendar.OCTOBER:
+                                        selectedMonth = "Oktober";
+                                        break;
+                                    case Calendar.NOVEMBER:
+                                        selectedMonth = "November";
+                                        break;
+                                    case Calendar.DECEMBER:
+                                        selectedMonth = "Desember";
+                                }
+                                selectedDate = selectedDay + ", " + dayOfMonth + " " + selectedMonth + " " + year;
+                                tanggalDatabase = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth);
+
+                                simpanPilihanTanggalFormAgenda.setYear(year);
+                                simpanPilihanTanggalFormAgenda.setMonth(month);
+                                simpanPilihanTanggalFormAgenda.setDay(dayOfMonth);
+                                simpanPilihanTanggalFormAgenda.setDayweek(dayOfWeek);
+                                simpanPilihanTanggalFormAgenda.setConditionTanggal(true);
+//                                 Toast.makeText(getApplicationContext(),tanggalDatabase,Toast.LENGTH_SHORT).show();
+                                tanggal.setText(selectedDate);
+                            }
+                        }).pickerType(CalendarView.ONE_DAY_PICKER);
+                        builder.date(dateSelected);
+                        DatePicker datePicker = builder.build();
+                        datePicker.show();
+                }
+                else{
+                    DatePickerBuilder builder = new DatePickerBuilder(FormAgenda.this, new OnSelectDateListener() {
+
+                        @Override
+                        public void onSelect(List<Calendar> calendar) {
+                            Stream.of(calendar).forEach(calendars -> {
+
+                                        dayOfWeek = calendars.get(Calendar.DAY_OF_WEEK);
+                                        dayOfMonth = calendars.get(Calendar.DAY_OF_MONTH);
+                                        month = calendars.get(Calendar.MONTH);
+                                        year = calendars.get(Calendar.YEAR);
+
+                                    }
+                            );
+//
+                            switch (dayOfWeek) {
+                                case Calendar.SUNDAY:
+                                    selectedDay = "Minggu";
+                                    break;
+                                case Calendar.MONDAY:
+                                    selectedDay = "Senin";
+                                    break;
+                                case Calendar.TUESDAY:
+                                    selectedDay = "Selasa";
+                                    break;
+                                case Calendar.WEDNESDAY:
+                                    selectedDay = "Rabu";
+                                    break;
+                                case Calendar.THURSDAY:
+                                    selectedDay = "Kamis";
+                                    break;
+                                case Calendar.FRIDAY:
+                                    selectedDay = "Jumat";
+                                    break;
+                                case Calendar.SATURDAY:
+                                    selectedDay = "Sabtu";
+                                    break;
+                            }
+                            switch (month) {
+                                case Calendar.JANUARY:
+                                    selectedMonth = "Januari";
+                                    break;
+                                case Calendar.FEBRUARY:
+                                    selectedMonth = "Februari";
+                                    break;
+                                case Calendar.MARCH:
+                                    selectedMonth = "Maret";
+                                    break;
+                                case Calendar.APRIL:
+                                    selectedMonth = "April";
+                                    break;
+                                case Calendar.MAY:
+                                    selectedMonth = "Mei";
+                                    break;
+                                case Calendar.JUNE:
+                                    selectedMonth = "Juni";
+                                    break;
+                                case Calendar.JULY:
+                                    selectedMonth = "Juli";
+                                    break;
+                                case Calendar.AUGUST:
+                                    selectedMonth = "Agustus";
+                                    break;
+                                case Calendar.SEPTEMBER:
+                                    selectedMonth = "September";
+                                    break;
+                                case Calendar.OCTOBER:
+                                    selectedMonth = "Oktober";
+                                    break;
+                                case Calendar.NOVEMBER:
+                                    selectedMonth = "November";
+                                    break;
+                                case Calendar.DECEMBER:
+                                    selectedMonth = "Desember";
+                            }
+                            selectedDate = selectedDay + ", " + dayOfMonth + " " + selectedMonth + " " + year;
+                            tanggalDatabase = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth);
+
+                            simpanPilihanTanggalFormAgenda.setYear(year);
+                            simpanPilihanTanggalFormAgenda.setMonth(month);
+                            simpanPilihanTanggalFormAgenda.setDay(dayOfMonth);
+                            simpanPilihanTanggalFormAgenda.setDayweek(dayOfWeek);
+                            simpanPilihanTanggalFormAgenda.setConditionTanggal(true);
+//                                 Toast.makeText(getApplicationContext(),tanggalDatabase,Toast.LENGTH_SHORT).show();
+                            tanggal.setText(selectedDate);
+                        }
+                    }).pickerType(CalendarView.ONE_DAY_PICKER);
+                    DatePicker datePicker = builder.build();
+                    datePicker.show();
+                }
             }
         });
 
@@ -242,7 +426,7 @@ public class FormAgenda extends AppCompatActivity {
                 map.put("nim",nim.getText().toString());
                 map.put("kode_acara",kodeAcara+"");
                 map.put("kode_ruang",kodeRuang);
-                map.put("tanggal",tanggal.getText().toString());
+                map.put("tanggal",tanggalDatabase);
                 map.put("waktu",((waktu.getText().toString()).substring(0,5))+":00");
                 map.put("kode_jadwal",getIntent().getStringExtra("kode_jadwal"));
                 return map;
@@ -250,6 +434,7 @@ public class FormAgenda extends AppCompatActivity {
         };
 
         AppController.getInstance().addToRequestQueue(sendData);
+        Toast.makeText(getApplicationContext(),tanggalDatabase,Toast.LENGTH_SHORT).show();
 
     }
 
@@ -292,7 +477,7 @@ public class FormAgenda extends AppCompatActivity {
                 map.put("nim",nim.getText().toString());
                 map.put("kode_acara",kodeAcara+"");
                 map.put("kode_ruang",kodeRuang);
-                map.put("tanggal",getIntent().getStringExtra("tanggalDatabase"));
+                map.put("tanggal",tanggalDatabase);
                 map.put("waktu",((waktu.getText().toString()).substring(0,5))+":00");
                 return map;
             }

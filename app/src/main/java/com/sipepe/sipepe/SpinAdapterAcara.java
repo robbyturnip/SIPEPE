@@ -38,6 +38,7 @@ public class SpinAdapterAcara extends ArrayAdapter<Acara> {
     public View getView(int position, View convertView, ViewGroup parent){
         TextView label=(TextView) super.getView(position,convertView,parent);
         label.setTextColor(Color.BLACK);
+        label.setTextSize(24);
         label.setText(acaras[position].getAcara());
         return label;
     }

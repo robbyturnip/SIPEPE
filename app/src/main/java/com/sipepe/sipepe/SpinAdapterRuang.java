@@ -37,6 +37,7 @@ public class SpinAdapterRuang extends ArrayAdapter<Ruang> {
     public View getView(int position, View convertView, ViewGroup parent){
         TextView label=(TextView) super.getView(position,convertView,parent);
         label.setTextColor(Color.BLACK);
+        label.setTextSize(24);
         label.setText(ruangs[position].getRuang());
         return label;
     }

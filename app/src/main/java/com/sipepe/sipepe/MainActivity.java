@@ -57,6 +57,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+//        reset nilai variabel pada class lain
+        SimpanPilihanTanggalFormAgenda simpanPilihanTanggalFormAgenda=new SimpanPilihanTanggalFormAgenda();
+        simpanPilihanTanggalFormAgenda.setConditionTanggal(false);
+        SimpanPilihanWaktuFormAgenda simpanPilihanWaktuFormAgendaFormAgenda=new SimpanPilihanWaktuFormAgenda();
+        simpanPilihanWaktuFormAgendaFormAgenda.setConditionWaktu(false);
+
         jadwals=new ArrayList<>();
 
 //        load tanggal terakhir dipilih

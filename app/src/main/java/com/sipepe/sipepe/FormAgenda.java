@@ -26,6 +26,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
+import com.applandeo.materialcalendarview.CalendarView;
+import com.applandeo.materialcalendarview.DatePicker;
+import com.applandeo.materialcalendarview.builders.DatePickerBuilder;
+import com.applandeo.materialcalendarview.listeners.OnSelectDateListener;
 import com.sipepe.sipepe.Util.AppController;
 import com.sipepe.sipepe.Util.ServerAPI;
 
@@ -36,6 +40,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class FormAgenda extends AppCompatActivity {
@@ -66,8 +71,8 @@ public class FormAgenda extends AppCompatActivity {
         pd=new ProgressDialog(FormAgenda.this);
         loadSpinner();
 
-        Toast.makeText(getApplicationContext(),getIntent().getStringExtra("tanggalDatabase"),Toast.LENGTH_SHORT).show();
-
+//        Toast.makeText(getApplicationContext(),getIntent().getStringExtra("tanggalDatabase"),Toast.LENGTH_SHORT).show();
+//
 
 
 //        waktu edittextview onclick
@@ -89,9 +94,28 @@ public class FormAgenda extends AppCompatActivity {
             }
         });
 
+        tanggal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerBuilder builder = new DatePickerBuilder(FormAgenda.this, new OnSelectDateListener() {
+                    @Override
+                    public void onSelect(List<Calendar> calendar) {
+                        Toast.makeText(getApplicationContext(),"wkwkw",Toast.LENGTH_SHORT).show();
+                    }
+                }).pickerType(CalendarView.ONE_DAY_PICKER);
+
+                DatePicker datePicker = builder.build();
+                datePicker.show();
+            }
+        });
+
 //        Terima Parsing Data Intent
         tanggal.setText(getIntent().getStringExtra("tanggal"));
-        waktu.setText(getIntent().getStringExtra("waktu"));
+        if(getIntent().getStringExtra("waktu")!=null) {
+            waktu.setText(getIntent().getStringExtra("waktu"));
+        }else{
+            waktu.setText(getIntent().getStringExtra("waktuSekarang"));
+        }
         nim.setText(getIntent().getStringExtra("nim"));
 
     }
@@ -139,7 +163,7 @@ public class FormAgenda extends AppCompatActivity {
 
     private void deleteJadwal() {
 
-        pd.setMessage("Update Jadwal");
+        pd.setMessage("Delete Jadwal");
         pd.setCancelable(false);
         pd.show();
 
@@ -155,8 +179,9 @@ public class FormAgenda extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-                        startActivity( new Intent(FormAgenda.this,MainActivity.class));
+                        Intent intent = new Intent(FormAgenda.this,MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                     }
                 },
                 new Response.ErrorListener() {
@@ -199,7 +224,9 @@ public class FormAgenda extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-                        startActivity( new Intent(FormAgenda.this,MainActivity.class));
+                        Intent intent = new Intent(FormAgenda.this,MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                     }
                 },
                 new Response.ErrorListener() {
@@ -247,7 +274,9 @@ public class FormAgenda extends AppCompatActivity {
                             e.printStackTrace();
                         }
 
-                        startActivity( new Intent(FormAgenda.this,MainActivity.class));
+                        Intent intent = new Intent(FormAgenda.this,MainActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
                     }
                 },
                 new Response.ErrorListener() {

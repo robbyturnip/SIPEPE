@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static java.lang.Integer.parseInt;
+
 
 public class MainActivity extends AppCompatActivity {
 //   inisiasi Class dan View
@@ -48,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     int dayOfMonth,dayOfWeek,month,year;
-    String selectedDay,selectedMonth,selectedDate,tanggalDatabase;
+    String selectedDay,selectedMonth,selectedDate,tanggalDatabase,waktuSekarang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
 
 //        Load Event
         loadEvent();
+        Calendar calendar=Calendar.getInstance();
+        int hour=calendar.get(Calendar.HOUR_OF_DAY);
+        int minute=calendar.get(Calendar.MINUTE);
+        waktuSekarang=String.format("%02d:%02d",hour,minute)+" WIB";
 
 
 //        setting recycleView
@@ -95,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
         calendarView.setMaximumDate(max);
 
         List<EventDay> events = new ArrayList<>();
-        Calendar calendar = Calendar.getInstance();
         events.add(new EventDay(calendar, R.drawable.ic_event));
         calendarView.setEvents(events);
 
@@ -347,6 +352,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent=new Intent(MainActivity.this, FormAgenda.class);
                 intent.putExtra("tanggal",selectedDate);
                 intent.putExtra("tanggalDatabase",tanggalDatabase);
+                intent.putExtra("waktuSekarang",waktuSekarang);
                 intent.putExtra("status","1");
                 startActivity(intent);
             }
@@ -373,8 +379,80 @@ public class MainActivity extends AppCompatActivity {
                         {
                             try {
                                 JSONObject event = response.getJSONObject(i);
+                                String dataDay,dataMonth,dataDate;
+                                dataDay="";
+                                dataMonth="";
+                                String formatTanggal=event.getString("tanggal");
+                                int year=parseInt((formatTanggal).substring(0,4));
+                                int month=parseInt((formatTanggal).substring(5,7))-1;
+                                int dayOfMonth=parseInt((formatTanggal).substring(8,10));
+                                Calendar calendar=Calendar.getInstance();
+                                calendar.set(year,month,dayOfMonth);
+                                int dayOfweek=calendar.get(Calendar.DAY_OF_WEEK);
+                                switch (dayOfweek) {
+                                    case Calendar.SUNDAY:
+                                        dataDay = "Minggu";
+                                        break;
+                                    case Calendar.MONDAY:
+                                        dataDay = "Senin";
+                                        break;
+                                    case Calendar.TUESDAY:
+                                        dataDay = "Selasa";
+                                        break;
+                                    case Calendar.WEDNESDAY:
+                                        dataDay = "Rabu";
+                                        break;
+                                    case Calendar.THURSDAY:
+                                        dataDay = "Kamis";
+                                        break;
+                                    case Calendar.FRIDAY:
+                                        dataDay = "Jumat";
+                                        break;
+                                    case Calendar.SATURDAY:
+                                        dataDay = "Sabtu";
+                                        break;
+                                }
+                                switch (month) {
+                                    case Calendar.JANUARY:
+                                        dataMonth = "Januari";
+                                        break;
+                                    case Calendar.FEBRUARY:
+                                        dataMonth = "Februari";
+                                        break;
+                                    case Calendar.MARCH:
+                                        dataMonth = "Maret";
+                                        break;
+                                    case Calendar.APRIL:
+                                        dataMonth = "April";
+                                        break;
+                                    case Calendar.MAY:
+                                        dataMonth = "Mei";
+                                        break;
+                                    case Calendar.JUNE:
+                                        dataMonth = "Juni";
+                                        break;
+                                    case Calendar.JULY:
+                                        dataMonth = "Juli";
+                                        break;
+                                    case Calendar.AUGUST:
+                                        dataMonth = "Agustus";
+                                        break;
+                                    case Calendar.SEPTEMBER:
+                                        dataMonth = "September";
+                                        break;
+                                    case Calendar.OCTOBER:
+                                        dataMonth = "Oktober";
+                                        break;
+                                    case Calendar.NOVEMBER:
+                                        dataMonth = "November";
+                                        break;
+                                    case Calendar.DECEMBER:
+                                        dataMonth = "Desember";
+                                }
+
+                                dataDate = dataDay + ", " + dayOfMonth + " " + dataMonth + " " + year;
                                 Jadwal jadwal = new Jadwal();
-                                jadwal.setTanggal(event.getString("tanggal"));
+                                jadwal.setTanggal(dataDate);
                                 jadwal.setAcara(event.getString("acara"));
                                 jadwal.setWaktu((event.getString("waktu")).substring(0,5)+" WIB");
                                 jadwal.setRuang(event.getString("ruang"));

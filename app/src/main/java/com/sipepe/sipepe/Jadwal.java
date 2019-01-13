@@ -1,7 +1,7 @@
 package com.sipepe.sipepe;
 
 public class Jadwal {
-    String acara,nama,nim,judul,tanggal,waktu,ruang,narasumber1,narasumber2,narasumber3,kode_acara,kode_ruang,kode_jadwal;
+    String acara,nama,nim,judul,tanggal,waktu,ruang,narasumber1,narasumber2,narasumber3,kode_acara,kode_ruang,kode_jadwal,tanggalDatabase;
     public Jadwal(){}
     public void setAcara(String acara){
         this.acara=acara;
@@ -34,6 +34,10 @@ public class Jadwal {
     }
     public void  setKodeRuang(String kode_ruang){this.kode_ruang=kode_ruang;}
     public void  setKodeJadwal(String kode_jadwal){this.kode_jadwal=kode_jadwal;}
+    public void  setTanggalDatabase(String tanggalDatabase){this.tanggalDatabase=tanggalDatabase;}
+    public String getTanggalDatabase(){
+        return tanggalDatabase;
+    }
     public String getKodeJadwal(){
         return kode_jadwal;
     }

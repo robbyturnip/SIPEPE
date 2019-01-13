@@ -29,6 +29,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.annimon.stream.Stream;
 import com.applandeo.materialcalendarview.CalendarView;
 import com.applandeo.materialcalendarview.DatePicker;
+import com.applandeo.materialcalendarview.EventDay;
 import com.applandeo.materialcalendarview.builders.DatePickerBuilder;
 import com.applandeo.materialcalendarview.exceptions.OutOfDateRangeException;
 import com.applandeo.materialcalendarview.listeners.OnSelectDateListener;
@@ -46,14 +47,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static java.lang.Integer.parseInt;
+
 public class FormAgenda extends AppCompatActivity {
     Toolbar toolbar;
+    TextView nama,skripsi,dosen1,dosen2,dosen3;
     EditText tanggal;
     EditText waktu;
     Spinner acara,ruang;
     AutoCompleteTextView nim;
     ArrayList<Ruang> ruangs;
     ProgressDialog pd;
+    AdapterMahasiswa adapterMahasiswa= null;
+    ArrayList<Mahasiswa> mahasiswas = new ArrayList<>();
     Acara[] myAcara;
     Ruang[] myRuang;
     protected SpinAdapterAcara spinAdapterAcara;
@@ -66,33 +72,51 @@ public class FormAgenda extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_form_agenda);
-        toolbar=findViewById(R.id.form_toolbar);
+        toolbar = findViewById(R.id.form_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        tanggal=findViewById(R.id.tanggal);
-        waktu=findViewById(R.id.waktu);
-        nim=findViewById(R.id.nim);
-        pd=new ProgressDialog(FormAgenda.this);
+        dataMahasiswa();
+
+//      inisiasi komponen dalam xml
+        nama=findViewById(R.id.nama);
+        skripsi=findViewById(R.id.skripsi);
+        dosen1=findViewById(R.id.dosen1);
+        dosen2=findViewById(R.id.dosen2);
+        dosen3=findViewById(R.id.dosen3);
+        tanggal = findViewById(R.id.tanggal);
+        waktu = findViewById(R.id.waktu);
+        pd = new ProgressDialog(FormAgenda.this);
         loadSpinner();
 
-//        Toast.makeText(getApplicationContext(),getIntent().getStringExtra("tanggalDatabase"),Toast.LENGTH_SHORT).show();
-//
+        //        Terima Parsing Data Intent
+        tanggalDatabase = getIntent().getStringExtra("tanggalDatabase");
+        tanggal.setText(getIntent().getStringExtra("tanggal"));
+        if (getIntent().getStringExtra("waktu") != null) {
+            waktu.setText(getIntent().getStringExtra("waktu"));
+        } else {
+            waktu.setText(getIntent().getStringExtra("waktuSekarang"));
+        }
+        skripsi.setText(getIntent().getStringExtra("skripsi"));
+        dosen1.setText(getIntent().getStringExtra("dosen1"));
+        dosen2.setText(getIntent().getStringExtra("dosen2"));
+        dosen3.setText(getIntent().getStringExtra("dosen3"));
+        nama.setText(getIntent().getStringExtra("nama"));
 
 
 //        waktu edittextview onclick
 
         waktu.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Calendar calendar=Calendar.getInstance();
-                int hour=calendar.get(Calendar.HOUR_OF_DAY);
-                int minute=calendar.get(Calendar.MINUTE);
+                Calendar calendar = Calendar.getInstance();
+                int hour = parseInt((waktu.getText().toString()).substring(0, 2));
+                int minute = parseInt((waktu.getText().toString()).substring(3, 5));
                 TimePickerDialog timePickerDialog;
-                timePickerDialog=new TimePickerDialog(FormAgenda.this, new TimePickerDialog.OnTimeSetListener() {
+                timePickerDialog = new TimePickerDialog(FormAgenda.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                        waktu.setText(String.format("%02d:%02d",hourOfDay,minute)+" WIB");
+                    public void onTimeSet(TimePicker view, int hour, int minute) {
+                        waktu.setText(String.format("%02d:%02d", hour, minute) + " WIB");
                     }
-                },hour,minute,true);
+                }, hour, minute, true);
                 timePickerDialog.setTitle("Pilih Waktu");
                 timePickerDialog.show();
             }
@@ -110,97 +134,6 @@ public class FormAgenda extends AppCompatActivity {
                     year = simpanPilihanTanggalFormAgenda.getYear();
                     Calendar dateSelected = DateUtils.getCalendar();
                     dateSelected.set(year, month, dayOfMonth);
-                        DatePickerBuilder builder = new DatePickerBuilder(FormAgenda.this, new OnSelectDateListener() {
-
-                            @Override
-                            public void onSelect(List<Calendar> calendar) {
-                                Stream.of(calendar).forEach(calendars -> {
-
-                                            dayOfWeek = calendars.get(Calendar.DAY_OF_WEEK);
-                                            dayOfMonth = calendars.get(Calendar.DAY_OF_MONTH);
-                                            month = calendars.get(Calendar.MONTH);
-                                            year = calendars.get(Calendar.YEAR);
-
-                                        }
-                                );
-//
-                                switch (dayOfWeek) {
-                                    case Calendar.SUNDAY:
-                                        selectedDay = "Minggu";
-                                        break;
-                                    case Calendar.MONDAY:
-                                        selectedDay = "Senin";
-                                        break;
-                                    case Calendar.TUESDAY:
-                                        selectedDay = "Selasa";
-                                        break;
-                                    case Calendar.WEDNESDAY:
-                                        selectedDay = "Rabu";
-                                        break;
-                                    case Calendar.THURSDAY:
-                                        selectedDay = "Kamis";
-                                        break;
-                                    case Calendar.FRIDAY:
-                                        selectedDay = "Jumat";
-                                        break;
-                                    case Calendar.SATURDAY:
-                                        selectedDay = "Sabtu";
-                                        break;
-                                }
-                                switch (month) {
-                                    case Calendar.JANUARY:
-                                        selectedMonth = "Januari";
-                                        break;
-                                    case Calendar.FEBRUARY:
-                                        selectedMonth = "Februari";
-                                        break;
-                                    case Calendar.MARCH:
-                                        selectedMonth = "Maret";
-                                        break;
-                                    case Calendar.APRIL:
-                                        selectedMonth = "April";
-                                        break;
-                                    case Calendar.MAY:
-                                        selectedMonth = "Mei";
-                                        break;
-                                    case Calendar.JUNE:
-                                        selectedMonth = "Juni";
-                                        break;
-                                    case Calendar.JULY:
-                                        selectedMonth = "Juli";
-                                        break;
-                                    case Calendar.AUGUST:
-                                        selectedMonth = "Agustus";
-                                        break;
-                                    case Calendar.SEPTEMBER:
-                                        selectedMonth = "September";
-                                        break;
-                                    case Calendar.OCTOBER:
-                                        selectedMonth = "Oktober";
-                                        break;
-                                    case Calendar.NOVEMBER:
-                                        selectedMonth = "November";
-                                        break;
-                                    case Calendar.DECEMBER:
-                                        selectedMonth = "Desember";
-                                }
-                                selectedDate = selectedDay + ", " + dayOfMonth + " " + selectedMonth + " " + year;
-                                tanggalDatabase = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth);
-
-                                simpanPilihanTanggalFormAgenda.setYear(year);
-                                simpanPilihanTanggalFormAgenda.setMonth(month);
-                                simpanPilihanTanggalFormAgenda.setDay(dayOfMonth);
-                                simpanPilihanTanggalFormAgenda.setDayweek(dayOfWeek);
-                                simpanPilihanTanggalFormAgenda.setConditionTanggal(true);
-//                                 Toast.makeText(getApplicationContext(),tanggalDatabase,Toast.LENGTH_SHORT).show();
-                                tanggal.setText(selectedDate);
-                            }
-                        }).pickerType(CalendarView.ONE_DAY_PICKER);
-                        builder.date(dateSelected);
-                        DatePicker datePicker = builder.build();
-                        datePicker.show();
-                }
-                else{
                     DatePickerBuilder builder = new DatePickerBuilder(FormAgenda.this, new OnSelectDateListener() {
 
                         @Override
@@ -283,27 +216,159 @@ public class FormAgenda extends AppCompatActivity {
                             simpanPilihanTanggalFormAgenda.setDay(dayOfMonth);
                             simpanPilihanTanggalFormAgenda.setDayweek(dayOfWeek);
                             simpanPilihanTanggalFormAgenda.setConditionTanggal(true);
-//                                 Toast.makeText(getApplicationContext(),tanggalDatabase,Toast.LENGTH_SHORT).show();
                             tanggal.setText(selectedDate);
                         }
                     }).pickerType(CalendarView.ONE_DAY_PICKER);
+                    builder.date(dateSelected);
+                    DatePicker datePicker = builder.build();
+                    datePicker.show();
+                } else {
+                    dayOfMonth = parseInt(tanggalDatabase.substring(8, 10));
+                    month = parseInt(tanggalDatabase.substring(5, 7))-1;
+                    year = parseInt(tanggalDatabase.substring(0, 4));
+                    Calendar dateSelected = DateUtils.getCalendar();
+                    dateSelected.set(year, month, dayOfMonth);
+                    DatePickerBuilder builder = new DatePickerBuilder(FormAgenda.this, new OnSelectDateListener() {
+
+                        @Override
+                        public void onSelect(List<Calendar> calendar) {
+                            Stream.of(calendar).forEach(calendars -> {
+
+                                        dayOfWeek = calendars.get(Calendar.DAY_OF_WEEK);
+                                        dayOfMonth = calendars.get(Calendar.DAY_OF_MONTH);
+                                        month = calendars.get(Calendar.MONTH);
+                                        year = calendars.get(Calendar.YEAR);
+
+                                    }
+                            );
+//
+                            switch (dayOfWeek) {
+                                case Calendar.SUNDAY:
+                                    selectedDay = "Minggu";
+                                    break;
+                                case Calendar.MONDAY:
+                                    selectedDay = "Senin";
+                                    break;
+                                case Calendar.TUESDAY:
+                                    selectedDay = "Selasa";
+                                    break;
+                                case Calendar.WEDNESDAY:
+                                    selectedDay = "Rabu";
+                                    break;
+                                case Calendar.THURSDAY:
+                                    selectedDay = "Kamis";
+                                    break;
+                                case Calendar.FRIDAY:
+                                    selectedDay = "Jumat";
+                                    break;
+                                case Calendar.SATURDAY:
+                                    selectedDay = "Sabtu";
+                                    break;
+                            }
+                            switch (month) {
+                                case Calendar.JANUARY:
+                                    selectedMonth = "Januari";
+                                    break;
+                                case Calendar.FEBRUARY:
+                                    selectedMonth = "Februari";
+                                    break;
+                                case Calendar.MARCH:
+                                    selectedMonth = "Maret";
+                                    break;
+                                case Calendar.APRIL:
+                                    selectedMonth = "April";
+                                    break;
+                                case Calendar.MAY:
+                                    selectedMonth = "Mei";
+                                    break;
+                                case Calendar.JUNE:
+                                    selectedMonth = "Juni";
+                                    break;
+                                case Calendar.JULY:
+                                    selectedMonth = "Juli";
+                                    break;
+                                case Calendar.AUGUST:
+                                    selectedMonth = "Agustus";
+                                    break;
+                                case Calendar.SEPTEMBER:
+                                    selectedMonth = "September";
+                                    break;
+                                case Calendar.OCTOBER:
+                                    selectedMonth = "Oktober";
+                                    break;
+                                case Calendar.NOVEMBER:
+                                    selectedMonth = "November";
+                                    break;
+                                case Calendar.DECEMBER:
+                                    selectedMonth = "Desember";
+                            }
+                            selectedDate = selectedDay + ", " + dayOfMonth + " " + selectedMonth + " " + year;
+                            tanggalDatabase = String.format("%d-%02d-%02d", year, month + 1, dayOfMonth);
+
+                            simpanPilihanTanggalFormAgenda.setYear(year);
+                            simpanPilihanTanggalFormAgenda.setMonth(month);
+                            simpanPilihanTanggalFormAgenda.setDay(dayOfMonth);
+                            simpanPilihanTanggalFormAgenda.setDayweek(dayOfWeek);
+                            simpanPilihanTanggalFormAgenda.setConditionTanggal(true);
+                            tanggal.setText(selectedDate);
+                        }
+                    }).pickerType(CalendarView.ONE_DAY_PICKER);
+                    builder.date(dateSelected);
                     DatePicker datePicker = builder.build();
                     datePicker.show();
                 }
             }
         });
 
-//        Terima Parsing Data Intent
-        tanggal.setText(getIntent().getStringExtra("tanggal"));
-        if(getIntent().getStringExtra("waktu")!=null) {
-            waktu.setText(getIntent().getStringExtra("waktu"));
-        }else{
-            waktu.setText(getIntent().getStringExtra("waktuSekarang"));
-        }
-        nim.setText(getIntent().getStringExtra("nim"));
 
     }
+    public void dataMahasiswa(){
+        JsonArrayRequest reqData = new JsonArrayRequest(Request.Method.POST, ServerAPI.URL_READ_MAHASISWA  ,null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d("tampil","response : " + response);
+                        for(int i = 0 ; i < response.length(); i++) {
+                            try {
+                                JSONObject mhs = response.getJSONObject(i);
+                                 Mahasiswa mahasiswa=new Mahasiswa();
+                                 mahasiswa.setNim(mhs.getString("nim"));
+                                 mahasiswa.setNama(mhs.getString("mahasiswa"));
+                                 mahasiswa.setSkripsi(mhs.getString("skripsi"));
+                                mahasiswa.setNarasumber1(mhs.getString("dosen1"));
+                                mahasiswa.setNarasumber2(mhs.getString("dosen2"));
+                                mahasiswa.setNarasumber3(mhs.getString("dosen3"));
+                                mahasiswas.add(mahasiswa);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
 
+                        adapterMahasiswa=new AdapterMahasiswa(getApplicationContext(),mahasiswas);
+                        adapterMahasiswa.setDropDownViewResource(R.layout.activity_adapter_mahasiswa);
+                        nim =(AutoCompleteTextView) findViewById(R.id.nim);
+                        nim.setAdapter(adapterMahasiswa);
+                        nim.setText(getIntent().getStringExtra("nim"));
+                        nim.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                nama.setText(mahasiswas.get(position).getNama());
+                                skripsi.setText(mahasiswas.get(position).getSkripsi());
+                                dosen1.setText(mahasiswas.get(position).getNarasumber1());
+                                dosen2.setText(mahasiswas.get(position).getNarasumber2());
+                                dosen3.setText(mahasiswas.get(position).getNarasumber3());
+                            }
+                        });
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("tampil", "error : " + error.getMessage());
+            }
+        });
+        AppController.getInstance().addToRequestQueue(reqData);
+
+    }
     public void loadSpinner(){
         loadAcara();
         loadRuang();
@@ -318,11 +383,9 @@ public class FormAgenda extends AppCompatActivity {
 
             if(getIntent().getStringExtra("status").equals("1")) {
                 insertJadwal();
-//                Toast.makeText(getApplicationContext(),((waktu.getText().toString()).substring(0,5))+":00",Toast.LENGTH_SHORT).show();
             }
             else{
                 updateJadwal();
-//                Toast.makeText(getApplicationContext(),getIntent().getStringExtra("kode_jadwal"),Toast.LENGTH_SHORT).show();
             }
             return true;
         }
@@ -359,7 +422,6 @@ public class FormAgenda extends AppCompatActivity {
                         pd.cancel();
                         try {
                             JSONObject res = new JSONObject(response);
-//                            Toast.makeText(FormAgenda.this, "pesan : "+   res.getString("pesan") , Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -372,7 +434,6 @@ public class FormAgenda extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         pd.cancel();
-//                        Toast.makeText(FormAgenda.this, "pesan : Gagal Delete Jadwal", Toast.LENGTH_SHORT).show();
                     }
                 }){
             @Override
@@ -403,7 +464,6 @@ public class FormAgenda extends AppCompatActivity {
                         try {
                             JSONObject res = new JSONObject(response);
                             Log.d("tampil","response : " + res.getString("pesan"));
-//                            Toast.makeText(getApplicationContext(), "pesan : "+   res.getString("pesan") , Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -417,7 +477,6 @@ public class FormAgenda extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         pd.cancel();
-//                        Toast.makeText(FormAgenda.this, "pesan : Gagal Update Jadwal", Toast.LENGTH_SHORT).show();
                     }
                 }){
             @Override
@@ -434,8 +493,6 @@ public class FormAgenda extends AppCompatActivity {
         };
 
         AppController.getInstance().addToRequestQueue(sendData);
-        Toast.makeText(getApplicationContext(),tanggalDatabase,Toast.LENGTH_SHORT).show();
-
     }
 
     private void insertJadwal() {
@@ -450,11 +507,10 @@ public class FormAgenda extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         pd.cancel();
-                        Log.d("tampil","response : " + response.toString());
+                        Log.d("tampil","response : " + response);
                         try {
                             JSONObject res = new JSONObject(response);
                             Log.d("tampil","response : " + res.getString("pesan"));
-//                            Toast.makeText(FormAgenda.this, "pesan : "+   res.getString("pesan") , Toast.LENGTH_SHORT).show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -468,7 +524,6 @@ public class FormAgenda extends AppCompatActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         pd.cancel();
-//                        Toast.makeText(FormAgenda.this, "pesan : Gagal Tambah Jadwal", Toast.LENGTH_SHORT).show();
                     }
                 }){
             @Override
@@ -505,7 +560,7 @@ public class FormAgenda extends AppCompatActivity {
                                 myAcara[i]=new Acara();
                                 JSONObject acaraJson = response.getJSONObject(i);
                                 myAcara[i].setAcara(acaraJson.getString("acara"));
-                                myAcara[i].setKodeAcara(Integer.parseInt(acaraJson.getString("kode_acara")));
+                                myAcara[i].setKodeAcara(parseInt(acaraJson.getString("kode_acara")));
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -517,7 +572,7 @@ public class FormAgenda extends AppCompatActivity {
                         acara.setAdapter(spinAdapterAcara);
                         if(getIntent().getStringExtra("kode_acara")!=null) {
                             for (int i = 0; i < spinAdapterAcara.getCount(); i++) {
-                                if (Integer.parseInt(getIntent().getStringExtra("kode_acara"))==spinAdapterAcara.getItem(i).kodeAcara) {
+                                if (parseInt(getIntent().getStringExtra("kode_acara"))==spinAdapterAcara.getItem(i).kodeAcara) {
                                     acara.setSelection(spinAdapterAcara.getPosition(spinAdapterAcara.getItem(i)));
                                 }
                             }
@@ -527,7 +582,6 @@ public class FormAgenda extends AppCompatActivity {
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 Acara acara=spinAdapterAcara.getItem(position);
                                 kodeAcara=acara.getKodeAcara();
-//                                Toast.makeText(FormAgenda.this,"Kode Acara : "+acara.getKodeAcara()+"\nAcara :"+acara.getAcara(),Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -580,7 +634,6 @@ public class FormAgenda extends AppCompatActivity {
                         spinAdapterRuang.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         ruang=findViewById(R.id.sp_ruang);
                         ruang.setAdapter(spinAdapterRuang);
-//                        Toast.makeText(FormAgenda.this,"Ruang : "+getIntent().getStringExtra("kode_ruang"),Toast.LENGTH_SHORT).show();
                         if(getIntent().getStringExtra("kode_ruang")!=null) {
                             for (int i = 0; i < spinAdapterRuang.getCount(); i++) {
                                 if (getIntent().getStringExtra("kode_ruang").equals(spinAdapterRuang.getItem(i).kodeRuang)) {
@@ -593,7 +646,6 @@ public class FormAgenda extends AppCompatActivity {
                             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                 Ruang ruang=spinAdapterRuang.getItem(position);
                                 kodeRuang=ruang.getKodeRuang();
-//                                Toast.makeText(FormAgenda.this,"Kode Ruang : "+ruang.getKodeRuang()+"\nRuang :"+ruang.getRuang(),Toast.LENGTH_SHORT).show();
                             }
 
                             @Override

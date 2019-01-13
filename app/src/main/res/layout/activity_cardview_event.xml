@@ -94,6 +94,36 @@
                     android:layout_height="match_parent"
                     android:visibility="gone" />
 
+                <TextView
+                    android:id="@+id/tanggalDatabase"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
+
+                <TextView
+                    android:id="@+id/skripsi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/dosen1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+                <TextView
+                    android:id="@+id/dosen2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/dosen3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+
             </LinearLayout>
             <LinearLayout
                 android:layout_weight="1"

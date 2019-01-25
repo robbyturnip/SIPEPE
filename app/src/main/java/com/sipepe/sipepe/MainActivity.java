@@ -1,14 +1,22 @@
 package com.sipepe.sipepe;
 
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.menu.MenuBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -51,8 +59,10 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView.LayoutManager rLayoutManager;
     ArrayList<Jadwal> jadwals=new ArrayList<>();
     List<EventDay> events = new ArrayList<>();
-
+    SharedPreferences shared;
     ProgressDialog pd;
+    AlertDialog alertdialog;
+    String event,tanggal;
 
 
     int dayOfMonth,dayOfWeek,month,year;
@@ -62,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+        shared= getSharedPreferences("Login", Context.MODE_PRIVATE);
 
 //        reset nilai variabel pada class lain
         SimpanPilihanTanggalFormAgenda simpanPilihanTanggalFormAgenda=new SimpanPilihanTanggalFormAgenda();
@@ -84,7 +97,15 @@ public class MainActivity extends AppCompatActivity {
         calendarView =findViewById(R.id.calendarView);
         recyclerView=findViewById(R.id.recyclerView);
         pd=new ProgressDialog(MainActivity.this);
-
+        if(shared.getString("rule","").equalsIgnoreCase("mahasiswa")) {
+            floatingActionButton.setEnabled(false);
+            floatingActionButton.hide();
+            tanggal=ServerAPI.URL_READ_TANGGAL_MAHASISWA;
+            event=ServerAPI.URL_VIEW_JADWAL_MAHASISWA;
+        }else{
+            tanggal=ServerAPI.URL_READ_TANGGAL;
+            event=ServerAPI.URL_READ;
+        }
 
 
 //        setting recycleView
@@ -351,21 +372,20 @@ public class MainActivity extends AppCompatActivity {
 
 
 //        ini FloatingActionButton
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(MainActivity.this, FormAgenda.class);
-                intent.putExtra("tanggal",selectedDate);
-                intent.putExtra("tanggalDatabase",tanggalDatabase);
-                intent.putExtra("waktuSekarang",waktuSekarang);
-                intent.putExtra("status","1");
-                startActivity(intent);
-            }
-        });
 
+            floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, FormAgenda.class);
+                    intent.putExtra("tanggal", selectedDate);
+                    intent.putExtra("tanggalDatabase", tanggalDatabase);
+                    intent.putExtra("waktuSekarang", waktuSekarang);
+                    intent.putExtra("status", "1");
+                    startActivity(intent);
+                }
+            });
+        }
 
-
-    }
     public void loadKalendar(){
         //        Awal Setting CalendarView Library Applandeo
         Calendar min = Calendar.getInstance();
@@ -381,15 +401,18 @@ public class MainActivity extends AppCompatActivity {
         pd.setCancelable(false);
         pd.show();
 
-        JsonArrayRequest reqData = new JsonArrayRequest(Request.Method.POST, ServerAPI.URL_READ_TANGGAL,null,
-                new Response.Listener<JSONArray>() {
+        StringRequest reqData  = new StringRequest(Request.Method.POST, tanggal,
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(String response) {
                         pd.cancel();
+                        try {
+                            JSONArray tanggal = new JSONArray(response);
                             Log.d("tampil","response : " + response);
-                            for(int i = 0 ; i < response.length(); i++) {
+                            for(int i = 0 ; i < tanggal.length(); i++) {
                                 try {
-                                    JSONObject event = response.getJSONObject(i);
+
+                                    JSONObject event = tanggal.getJSONObject(i);
                                     year=parseInt(event.getString("tanggal").substring(0,4));
                                     month=parseInt(event.getString("tanggal").substring(5,7))-1;
                                     dayOfMonth=parseInt(event.getString("tanggal").substring(8,10));
@@ -401,6 +424,9 @@ public class MainActivity extends AppCompatActivity {
                                 }
 
                             }
+                        }catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         calendarView.setEvents(events);
                     }
                 }, new Response.ErrorListener() {
@@ -409,9 +435,15 @@ public class MainActivity extends AppCompatActivity {
                 pd.cancel();
                 Log.d("tampil", "error : " + error.getMessage());
             }
-        });
-
-
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> map = new HashMap<>();
+                map.put("username",shared.getString("username",""));
+                map.put("password",shared.getString("password",""));
+                return map;
+            }
+        };
         AppController.getInstance().addToRequestQueue(reqData);
     }
     public void loadEvent(){
@@ -419,7 +451,7 @@ public class MainActivity extends AppCompatActivity {
         pd.setCancelable(false);
         pd.show();
         jadwals.clear();
-        StringRequest reqData = new StringRequest(Request.Method.POST, ServerAPI.URL_READ,
+        StringRequest reqData = new StringRequest(Request.Method.POST, event,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -528,6 +560,7 @@ public class MainActivity extends AppCompatActivity {
                             }
                         rAdapter.notifyDataSetChanged();
                     }
+
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
@@ -539,10 +572,59 @@ public class MainActivity extends AppCompatActivity {
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> map = new HashMap<>();
                 map.put("tanggal",tanggalDatabase);
+                map.put("username",shared.getString("username",""));
+                map.put("password",shared.getString("password",""));
                 return map;
             }
         };
 
         AppController.getInstance().addToRequestQueue(reqData);
+    }
+    @SuppressLint("RestrictedApi")
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_main_activity,menu);
+        if(menu instanceof MenuBuilder){
+            MenuBuilder m = (MenuBuilder) menu;
+            m.setOptionalIconsVisible(true);
+        }
+        if(shared.getString("rule","").equalsIgnoreCase("mahasiswa")) {
+            MenuItem tambah_mahasiswa=menu.findItem(R.id.tambah_mahasiswa);
+            tambah_mahasiswa.setEnabled(false);
+            tambah_mahasiswa.setVisible(false);
+            MenuItem daftar_mahasiswa=menu.findItem(R.id.daftar_mahasiswa);
+            daftar_mahasiswa.setEnabled(false);
+            daftar_mahasiswa.setVisible(false);
+        }
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem menuItem){
+        int id=menuItem.getItemId();
+        if(id==R.id.loguot){
+
+            alertdialog = new AlertDialog.Builder(MainActivity.this).create();
+            alertdialog.setTitle("Logout");
+            alertdialog.setMessage(" Apa anda yakin ingin logout ?");
+            alertdialog.setCancelable(false);
+            alertdialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Batal", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    alertdialog.dismiss();
+                }
+            });
+
+            alertdialog.setButton(DialogInterface.BUTTON_POSITIVE, "Logout", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    SharedPreferences.Editor editor = shared.edit();
+                    editor.clear();
+                    editor.commit();
+                    Intent intent = new Intent(MainActivity.this, Login.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                }
+            });
+            alertdialog.show();
+        }
+        return true;
     }
 }

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/loguot"
+        android:title="Logout"
+        android:contentDescription="Logout"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_person"
+        />
+
+    <item
+        android:id="@+id/tambah_mahasiswa"
+        android:title="Tambah Mahasiswa"
+        android:contentDescription="Logout"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_person_add"
+        />
+
+    <item
+        android:id="@+id/daftar_mahasiswa"
+        android:title="Daftar Mahasiswa"
+        android:contentDescription="Logout"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_view"
+        />
+</menu>

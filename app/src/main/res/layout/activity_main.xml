@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/gray_low_light"
     tools:context=".MainActivity">
 
 
@@ -14,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+        app:layout_constraintBottom_toTopOf="@+id/scrollView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -32,7 +33,7 @@
             app:titleTextColor="@android:color/white"/>
     </android.support.design.widget.AppBarLayout>
     <ScrollView
-        android:id="@+id/scrollView2"
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
@@ -59,6 +60,8 @@
                     android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
                     app:eventsEnabled="true"
+                    app:selectionColor="@color/colorPrimaryDark"
+                    app:todayLabelColor="@color/colorPrimaryDark"
                     app:headerColor="@color/colorPrimaryDark"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"

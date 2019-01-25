@@ -15,14 +15,14 @@
             android:id="@+id/form_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#F5F5F5"
+            android:background="#E0E0E0"
             app:title="JADWAL"
             app:titleTextColor="@android:color/black">
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
     <ScrollView
-        android:id="@+id/scrollView2"
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
@@ -41,14 +41,14 @@
             <android.support.constraint.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#F5F5F5"
+                android:background="#E0E0E0"
                 android:orientation="vertical">
 
                 <LinearLayout
                     android:id="@+id/linearLayout2"
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
-                    android:background="#EEEEEE"
+                    android:background="@color/gray"
                     android:orientation="vertical"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
@@ -69,14 +69,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout4">
 
+                    <ImageView
+                        android:src="@drawable/ic_event_note"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
 
                     <Spinner
                         android:id="@+id/sp_acara"
+                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:textSize="24sp" />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
@@ -95,18 +100,30 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
+                    <ImageView
+                        android:src="@drawable/ic_event"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"/>
+
                     <EditText
                         android:id="@+id/tanggal"
+                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:editable="false"
                         android:gravity="center_vertical"
                         android:hint="Tanggal"
-                        android:textSize="24sp" />
+                        android:textSize="18sp"/>
+
+                    <ImageView
+                    android:src="@drawable/ic_access_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
 
                     <EditText
                         android:id="@+id/waktu"
+                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
@@ -114,7 +131,7 @@
                         android:gravity="left"
                         android:hint="Waktu"
                         android:textColor="@android:color/black"
-                        android:textSize="24sp" />
+                        android:textSize="18sp"/>
 
                 </LinearLayout>
 
@@ -133,20 +150,25 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout3">
 
+                    <ImageView
+                        android:src="@drawable/ic_location"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
 
                     <Spinner
                         android:id="@+id/sp_ruang"
+                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:textSize="24sp" />
+                        android:textSize="18sp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/linearLayout6"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="55dp"
                     android:layout_gravity="center|center_horizontal|center_vertical"
                     android:layout_marginEnd="10dp"
                     android:layout_marginStart="10dp"
@@ -157,14 +179,20 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout7">
 
+                    <ImageView
+                        android:src="@drawable/ic_vpn_key"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
                     <AutoCompleteTextView
                         android:id="@+id/nim"
+                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:completionThreshold="1"
                         android:hint="Nomor Induk Mahasiswa"
                         android:textColor="@android:color/black"
-                        android:textSize="24sp" />
+                        android:textSize="18sp" />
 
 
                 </LinearLayout>
@@ -173,7 +201,7 @@
                     android:id="@+id/linearLayout7"
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
-                    android:background="#EEEEEE"
+                    android:background="@color/gray"
                     android:orientation="vertical"
                     android:layout_marginTop="16dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -195,13 +223,18 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout6">
 
+                    <ImageView
+                        android:src="@drawable/ic_person"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
                     <TextView
                         android:id="@+id/nama"
+                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="Nama Mahasiswa"
                         android:textColor="@android:color/black"
-                        android:textSize="24sp" />
+                        android:textSize="18sp"/>
 
                 </LinearLayout>
 
@@ -220,13 +253,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout8">
 
+                    <ImageView
+                        android:src="@drawable/ic_assignment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
                     <TextView
                         android:id="@+id/skripsi"
+                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="Judul Skripsi"
                         android:textColor="@android:color/black"
-                        android:textSize="24sp" />
+                        android:textSize="18sp"/>
 
                 </LinearLayout>
 
@@ -245,13 +284,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout9">
 
+                    <ImageView
+                        android:src="@drawable/ic_star"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
                     <TextView
                         android:id="@+id/dosen1"
+                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="Narasumber 1"
                         android:textColor="@android:color/black"
-                        android:textSize="24sp" />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
@@ -270,13 +315,19 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout10">
 
+                    <ImageView
+                        android:src="@drawable/ic_star"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
                     <TextView
                         android:id="@+id/dosen2"
+                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="Narasumber 2"
                         android:textColor="@android:color/black"
-                        android:textSize="24sp" />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
 
@@ -295,20 +346,26 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/linearLayout11">
 
+                    <ImageView
+                        android:src="@drawable/ic_star"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+
                     <TextView
                         android:id="@+id/dosen3"
+                        android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:hint="Narasumber 3"
                         android:textColor="@android:color/black"
-                        android:textSize="24sp" />
+                        android:textSize="18sp" />
 
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/linearLayout13"
                     android:layout_width="match_parent"
                     android:layout_height="5dp"
-                    android:background="#EEEEEE"
+                    android:background="@color/gray"
                     android:orientation="vertical"
                     android:layout_marginTop="16dp"
                     app:layout_constraintEnd_toEndOf="parent"

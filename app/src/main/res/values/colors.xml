@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3D5AFE</color>
-    <color name="colorPrimaryDark">#304FFE</color>
-    <color name="colorAccent">#536DFE</color>
-    <color name="odd">#eee</color>
-    <color name="even">#fff</color>
-    <color name="devider">#ccc</color>
+    <color name="colorPrimary">#519b90</color>
+    <color name="colorPrimaryDark">#519b90</color>
+    <color name="colorAccent">#519b90</color>
+    <color name="odd">#ccc</color>
+    <color name="even">#BDBDBD</color>
+    <color name="devider">#E0E0E0</color>
+    <color name="gray">#BDBDBD</color>
+    <color name="gray_low_light">#E0E0E0</color>
+    <color name="colorButtonLogin">#4d7f81</color>
+
 </resources>

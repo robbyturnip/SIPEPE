@@ -2,8 +2,12 @@ package com.sipepe.sipepe;
 
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -67,7 +71,8 @@ public class FormAgenda extends AppCompatActivity {
     public int kodeAcara;
     public String kodeRuang,selectedDay,selectedMonth,selectedDate,tanggalDatabase,waktuSekarang;
     int dayOfMonth,dayOfWeek,month,year;
-
+    AlertDialog alertdialog;
+    SharedPreferences shared;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,6 +80,7 @@ public class FormAgenda extends AppCompatActivity {
         toolbar = findViewById(R.id.form_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        shared= getSharedPreferences("Login", Context.MODE_PRIVATE);
         dataMahasiswa();
 
 //      inisiasi komponen dalam xml
@@ -87,6 +93,15 @@ public class FormAgenda extends AppCompatActivity {
         waktu = findViewById(R.id.waktu);
         pd = new ProgressDialog(FormAgenda.this);
         loadSpinner();
+
+        if (shared.getString("rule", "").equalsIgnoreCase("mahasiswa")) {
+            skripsi.setEnabled(false);
+            dosen1.setEnabled(false);
+            dosen2.setEnabled(false);
+            dosen3.setEnabled(false);
+            tanggal.setEnabled(false);
+            waktu.setEnabled(false);
+        }
 
         //        Terima Parsing Data Intent
         tanggalDatabase = getIntent().getStringExtra("tanggalDatabase");
@@ -347,6 +362,10 @@ public class FormAgenda extends AppCompatActivity {
                         adapterMahasiswa=new AdapterMahasiswa(getApplicationContext(),mahasiswas);
                         adapterMahasiswa.setDropDownViewResource(R.layout.activity_adapter_mahasiswa);
                         nim =(AutoCompleteTextView) findViewById(R.id.nim);
+                        if (shared.getString("rule", "").equalsIgnoreCase("mahasiswa")) {
+                            nim.setEnabled(false);
+
+                        }
                         nim.setAdapter(adapterMahasiswa);
                         nim.setText(getIntent().getStringExtra("nim"));
                         nim.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -373,8 +392,11 @@ public class FormAgenda extends AppCompatActivity {
         loadAcara();
         loadRuang();
     }
-    public boolean onCreateOptionsMenu(Menu menu){
-        getMenuInflater().inflate(R.menu.form_menu,menu);
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (shared.getString("rule", "").equalsIgnoreCase("admin")) {
+            getMenuInflater().inflate(R.menu.form_menu, menu);
+        }
         return true;
     }
     public boolean onOptionsItemSelected(MenuItem menuItem){
@@ -385,17 +407,68 @@ public class FormAgenda extends AppCompatActivity {
                 insertJadwal();
             }
             else{
-                updateJadwal();
+
+                alertdialog = new AlertDialog.Builder(FormAgenda.this).create();
+                alertdialog.setTitle("Update");
+                alertdialog.setMessage(" Apa anda yakin ingin update jadwal ?");
+                alertdialog.setCancelable(false);
+                alertdialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Batal", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertdialog.dismiss();
+                    }
+                });
+
+                alertdialog.setButton(DialogInterface.BUTTON_POSITIVE, "Update", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        updateJadwal();
+                    }
+                });
+                alertdialog.show();
             }
             return true;
         }
         else if (id==R.id.cancel){
             if(getIntent().getStringExtra("status").equals("1")) {
-                cancelJadwal();
+                alertdialog = new AlertDialog.Builder(FormAgenda.this).create();
+                alertdialog.setTitle("Keluar");
+                alertdialog.setMessage(" Apa anda yakin keluar ?");
+                alertdialog.setCancelable(false);
+                alertdialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Batal", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertdialog.dismiss();
+                    }
+                });
+
+                alertdialog.setButton(DialogInterface.BUTTON_POSITIVE, "Keluar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        cancelJadwal();
+                    }
+                });
+                alertdialog.show();
             }
             else{
-                deleteJadwal();
+                alertdialog = new AlertDialog.Builder(FormAgenda.this).create();
+                alertdialog.setTitle("Hapus");
+                alertdialog.setMessage(" Apa anda yakin menghapus jadwal?");
+                alertdialog.setCancelable(false);
+                alertdialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Batal", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        alertdialog.dismiss();
+                    }
+                });
 
+                alertdialog.setButton(DialogInterface.BUTTON_POSITIVE, "Hapus", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteJadwal();
+                    }
+                });
+                alertdialog.show();
             }
         }
         return  super.onOptionsItemSelected(menuItem);
@@ -410,7 +483,7 @@ public class FormAgenda extends AppCompatActivity {
 
     private void deleteJadwal() {
 
-        pd.setMessage("Delete Jadwal");
+        pd.setMessage("Hapus Jadwal");
         pd.setCancelable(false);
         pd.show();
 
@@ -569,6 +642,9 @@ public class FormAgenda extends AppCompatActivity {
                         spinAdapterAcara=new SpinAdapterAcara(getApplicationContext(),android.R.layout.simple_spinner_item,myAcara);
                         spinAdapterAcara.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         acara=findViewById(R.id.sp_acara);
+                        if (shared.getString("rule", "").equalsIgnoreCase("mahasiswa")) {
+                            acara.setEnabled(false);
+                        }
                         acara.setAdapter(spinAdapterAcara);
                         if(getIntent().getStringExtra("kode_acara")!=null) {
                             for (int i = 0; i < spinAdapterAcara.getCount(); i++) {
@@ -633,6 +709,9 @@ public class FormAgenda extends AppCompatActivity {
                         spinAdapterRuang=new SpinAdapterRuang(getApplicationContext(),android.R.layout.simple_spinner_item,myRuang);
                         spinAdapterRuang.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         ruang=findViewById(R.id.sp_ruang);
+                        if (shared.getString("rule", "").equalsIgnoreCase("mahasiswa")) {
+                            ruang.setEnabled(false);
+                        }
                         ruang.setAdapter(spinAdapterRuang);
                         if(getIntent().getStringExtra("kode_ruang")!=null) {
                             for (int i = 0; i < spinAdapterRuang.getCount(); i++) {

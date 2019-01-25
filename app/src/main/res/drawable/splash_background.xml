@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@color/gray_low_light" />
+
+    <item>
+        <bitmap android:src="@drawable/akakom_logo"
+            android:gravity="center" />
+
+    </item>
+
+</layer-list>
